@@ -57,4 +57,39 @@ envelopeRouter.delete("/:envelopeId", (req, res) => {
   res.status(204).send();
 });
 
+envelopeRouter.post("/transfer/:from/:to", (req, res) => {
+  const body = req.body;
+
+  if (!body || !body.balance) {
+    return res.status(400).send({ message: "One or more properties missing" });
+  }
+
+  const sourceEnvelope = db.envelope.getFromDBById(Number(req.params.from));
+  const destinationEnvelope = db.envelope.getFromDBById(Number(req.params.to));
+
+  if (!sourceEnvelope || !destinationEnvelope) {
+    return res
+      .status(404)
+      .send({ message: "Source or destination envelope not found" });
+  }
+
+  if (sourceEnvelope.balance < body.balance) {
+    return res
+      .status(404)
+      .send({ message: "Insufficient balance in source envelope" });
+  }
+
+  db.envelope.updateInstanceInDB({
+    ...sourceEnvelope,
+    balance: sourceEnvelope.balance - body.balance,
+  });
+
+  db.envelope.updateInstanceInDB({
+    ...destinationEnvelope,
+    balance: destinationEnvelope.balance + body.balance,
+  });
+
+  res.status(204).send();
+});
+
 export default envelopeRouter;
