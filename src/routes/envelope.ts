@@ -47,4 +47,14 @@ envelopeRouter.put("/:envelopeId", (req, res) => {
   res.send(envelope);
 });
 
+envelopeRouter.delete("/:envelopeId", (req, res) => {
+  const envelope = db.envelope.deleteFromDBbyId(Number(req.params.envelopeId));
+
+  if (!envelope) {
+    return res.status(404).send({ message: "No envelope found" });
+  }
+
+  res.status(204).send();
+});
+
 export default envelopeRouter;
