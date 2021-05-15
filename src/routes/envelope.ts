@@ -33,4 +33,18 @@ envelopeRouter.get("/:envelopeId", (req, res) => {
   res.send(JSON.parse(req.envelope));
 });
 
+envelopeRouter.put("/:envelopeId", (req, res) => {
+  const envelope = db.envelope.updateInstanceInDB({
+    id: Number(req.params.envelopeId),
+    ...JSON.parse(req.envelope),
+    ...req.body,
+  });
+
+  if (!envelope) {
+    return res.status(404).send({ message: "No envelope found" });
+  }
+
+  res.send(envelope);
+});
+
 export default envelopeRouter;
