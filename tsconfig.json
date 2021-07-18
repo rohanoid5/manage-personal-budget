@@ -8,7 +8,10 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "./src",
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types"],
+    "paths": {
+      "@routes/*": ["./routes/*"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

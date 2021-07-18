@@ -1,29 +1,14 @@
-import dotenv from "dotenv";
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-
-import envelopeRouter from "./routes/envelope";
+import dotenv from 'dotenv';
+import server from './server';
 
 // initialize configuration
 dotenv.config();
 
-const app = express();
-const port = process.env.SERVER_PORT;
+const PORT = Number(process.env.SERVER_PORT);
 
-app.use(cors());
-app.use(bodyParser.json());
-
-// define a route handler for the default home page
-app.get("/", (req, res) => {
-  res.send({
-    message: "Welcome to Personal Budget Manager API",
+new server()
+  .start(PORT)
+  .then((port) => console.log(`Running on port ${port}`))
+  .catch((error) => {
+    console.log(error);
   });
-});
-
-app.use("/envelope", envelopeRouter);
-
-// start the Express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});
